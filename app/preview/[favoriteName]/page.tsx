@@ -182,7 +182,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             }}>
                 <Btn type={"button"} text={"ノートを作成"} />
             </div>
-            <Btn type={"button"} text={"検索画面に戻る"} />
+            <Btn type={"button"} text={"検索画面に戻る"} onClick={() => window.location.href = "/selectFavorite"}/>
         </div>
     );
 };

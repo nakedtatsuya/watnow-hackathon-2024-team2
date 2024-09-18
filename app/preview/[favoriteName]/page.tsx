@@ -180,7 +180,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             <div style={{
                 margin: '30px 0 10px 0',
             }}>
-                <Btn type={"button"} text={"ノートを作成"} />
+                <Btn type={"button"} text={"ノートを作成"} onClick={() => window.location.href = "../home"}/>
             </div>
             <Btn type={"button"} text={"検索画面に戻る"} onClick={() => window.location.href = "/selectFavorite"}/>
         </div>

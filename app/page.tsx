@@ -1,8 +1,15 @@
+"use client";
+
 import title from "./images/title.png"
 import Image from "next/image";
 import Btn from "./conponemts/Button/page";
 
 export default function Home() {
+
+  const handleClick = () => {
+    window.location.href = "/SelectFavorite";
+  }
+
   return (
     <div style={{
       height: "100vh",
@@ -22,7 +29,7 @@ export default function Home() {
         flexFlow: "column",
       }}>
       <Btn text={"ログイン"}/>
-      <Btn text={"新規登録"}/>
+      <Btn text={"新規登録"} onClick={handleClick}/>
       </div>
     </main>
     <footer style={{

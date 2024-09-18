@@ -73,6 +73,7 @@ export default function SelectGenle() {
         const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
         setSubmitData(selectedItems);
         console.log(selectedItems);
+        window.location.href = '/selectFavorite';
     };
 
     return (

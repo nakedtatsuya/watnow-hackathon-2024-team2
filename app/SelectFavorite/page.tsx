@@ -1,22 +1,103 @@
 "use client";
 
-import React, { SetStateAction, useState } from 'react'
-import SearchBar from "../components/SearchBar"
+import React, { useState } from 'react';
+import SearchBar from "../components/SearchBar";
+import Link from 'next/link';
 
 const SelectFavorite = () => {
     const [inputText, setInputText] = useState<string>('');
-    const handleChange = (event: { target: { value: SetStateAction<string> } }) => {
-        setInputText(event.target.value);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+
+    const sampleTags = ["音楽", "小説", "漫画", "ラジオ"];
+    const sampleSuggestions = ["アーティストA", "アーティストB", "小説C", "漫画D"];
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setInputText(value);
+
+        if (value) {
+            const filteredSuggestions = sampleSuggestions.filter(suggestion =>
+                suggestion.includes(value)
+            );
+            setSuggestions(filteredSuggestions);
+        } else {
+            setSuggestions([]);
+        }
     };
 
-
     return (
-        <div>
-            <h1>はじめまして！</h1>
-            <h2>まずはあなたの好きなものを教えてください</h2>
-            <SearchBar value={inputText} onChange={handleChange} />
+        <div style={{
+            height: '100vh',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+        }}>
+            <div style={{
+                textAlign: 'center',
+            }}>
+                <h2>あなたの好きなアーティストや</h2>
+                <h2>推しを教えてください</h2>
+            </div>
+            <div style={{ position: 'relative', width: '100%', maxWidth: '400px', marginBottom: "100px" }}>
+                <SearchBar value={inputText} onChange={handleChange} />
+                {suggestions.length > 0 && (
+                    <div style={{
+                        position: 'absolute',
+                        top: '100%',
+                        left: '0',
+                        right: '0',
+                        border: '1px solid #ccc',
+                        borderRadius: '5px',
+                        backgroundColor: '#fff',
+                        zIndex: 1,
+                    }}>
+                        <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
+                            {suggestions.map((suggestion) => (
+                                <li key={suggestion} style={{
+                                    padding: '10px',
+                                    cursor: 'pointer',
+                                    transition: 'background-color 0.3s',
+                                }}
+                                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+                                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                                >
+                                    <Link href={`/preview/${suggestion}`}>
+                                        {suggestion}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+            <div style={{
+                width: '100%',
+                display: 'flex',
+                justifyContent: 'center',
+                flexWrap: 'wrap',
+                gap: '10px',
+                margin: "0"
+            }}>
+                {sampleTags.map((tag) => (
+                    <span key={tag} style={{
+                        backgroundColor: 'white',
+                        color: 'black',
+                        border: '1px solid #ccc',
+                        borderRadius: '20px',
+                        display: 'flex',
+                        margin: '0',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: 'calc(50% - 15px)',
+                        height: '40px',
+                    }}>
+                        {tag}
+                    </span>
+                ))}
+            </div>
         </div>
-    )
-}
+    );
+};
 
-export default SelectFavorite
+export default SelectFavorite;

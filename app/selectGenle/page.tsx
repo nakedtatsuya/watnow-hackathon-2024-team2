@@ -17,7 +17,7 @@ const CustomFormControlLabel = styled(FormControlLabel, { shouldForwardProp: (pr
         margin: '0',
         alignItems: 'center',
         justifyContent: 'center',
-        width: 'calc(50% - 20px)',
+        width: 'calc(50% - 15px)',
         height: '40px',
         border: '2px solid',
         borderColor: checked ? theme.palette.primary.main : theme.palette.grey[400],
@@ -41,20 +41,25 @@ const CheckboxContainer = styled('div')({
 });
 
 const sample = [
-    { id: 1, label: 'Option1' },
-    { id: 2, label: 'Option2' },
-    { id: 3, label: 'Option3' },
-    { id: 4, label: 'Option4' },
-    { id: 5, label: 'Option5' },
-    { id: 6, label: 'Option6' },
-    { id: 7, label: 'Option7' },
-    { id: 8, label: 'Option8' },
-    { id: 9, label: 'Option9' },
-    { id: 10, label: 'Option10' },
+    { id: 1, label: '音楽/Music', value:'音楽' },
+    { id: 2, label: '小説/Nobels', value:'小説' },
+    { id: 3, label: '漫画/manga', value:'漫画' },
+    { id: 4, label: 'ラジオ/Radio Shows', value:'ラジオ' },
+    { id: 5, label: 'アイドル/Idols', value:'アイドル' },
+    { id: 6, label: 'お笑い/Comedy', value:'お笑い' },
+    { id: 7, label: '映画/Movies', value:'映画' },
+    { id: 8, label: '舞台/Theater', value:'舞台' },
+    { id: 9, label: 'テレビドラマ/TV Dramas', value:'テレビドラマ' },
+    { id: 10, label: 'ミュージカル/Musicals', value:'ミュージカル' },
+    { id: 11, label: 'アニメ/Anime', value:'アニメ' },
+    { id: 12, label: 'ダンス/Dance', value:'ダンス' },
+    { id: 13, label: 'ゲーム/Video Games', value:'ゲーム' },
+    { id: 14, label: 'ファッション/Fashion', value:'ファッション' },
 ];
 
 export default function SelectGenle() {
-    const [checkedItems, setCheckedItems] = React.useState({});
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
+    const [submitData, setSubmitData] = React.useState<string[]>([]);
 
     const handleChange = (event) => {
         const { name, checked } = event.target;
@@ -62,6 +67,12 @@ export default function SelectGenle() {
             ...prev,
             [name]: checked,
         }));
+    };
+
+    const handleSubmit = () => {
+        const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
+        setSubmitData(selectedItems);
+        console.log(selectedItems);
     };
 
     return (
@@ -78,17 +89,17 @@ export default function SelectGenle() {
                             key={item.id}
                             control={
                                 <CustomCheckbox
-                                    checked={!!checkedItems[item.label]}
+                                    checked={!!checkedItems[item.value]}
                                     onChange={handleChange}
-                                    name={item.label.toString()}
+                                    name={item.value.toString()}
                                 />
                             }
                             label={item.label}
-                            checked={!!checkedItems[item.label]}
+                            checked={!!checkedItems[item.value]}
                         />
                     ))}
                 </CheckboxContainer>
-                <Btn text={"次へ"} />
+                <Btn type={"button"} text={"次に進む"} onClick={handleSubmit}/>
             </FormControl>
         </>
     );

@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Header from '../components/Header';
+import Link from 'next/link';
+
 
 const Home = () => {
     const sampleData = [
@@ -43,12 +45,14 @@ const Home = () => {
                             <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{tag}</h2>
                             {
                                 groupedData[tag].map(data => (
+                                    <Link href={`/favoriteNote/${data.title}`}>
                                     <div key={data.title} style={{ display: 'flex', alignItems: 'center', padding: '8px 0' }}>
                                         <img src={data.image} alt={data.title} style={{ width: '100px', height: '100px', borderRadius: '50%', marginRight: '16px' }} />
                                         <div style={{ display: 'flex', flexDirection: 'column' }}>
                                             <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '4px 0' }}>{data.title}</p>
                                         </div>
                                     </div>
+                                    </Link>
                                 ))
                             }
                         </div>

@@ -48,10 +48,37 @@ const NewRegistration = () => {
         password: '',
     });
 
-    const onSubmit = (data) => {
+    const onSubmit = async (data) => {
         console.log(data); // ここでデータを確認
         setFormData(data); // データを更新
-        setSubmitted(true); // フォーム送信時に状態を更新
+        
+        // registerUserを呼び出してユーザーを登録
+        await registerUser(data);
+        // setSubmitted(true); // フォーム送信時に状態を更新
+    };
+
+    const registerUser = async (data) => {
+        const response = await fetch('http://localhost:8000/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: data.email,
+                password: data.password,
+                username: data.name, // userNameを適切にマッピング
+            }),
+        });
+    
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log(responseData);
+            // localStorageにemailを保存
+            localStorage.setItem('userEmail', responseData.email);
+        } else {
+            console.error('Registration failed');
+            // エラーメッセージを表示するための状態管理を追加することも考慮
+        }
     };
 
     return (
@@ -60,7 +87,7 @@ const NewRegistration = () => {
                 <div style={{
                     width: '100%',
                     display: 'flex',
-                        flexDirection: 'column',
+                    flexDirection: 'column',
                 }}>
                     <h1 style={styles.h1}>新規登録</h1>
                     <h2 style={styles.h2}>登録が完了しました</h2>
@@ -109,11 +136,11 @@ const NewRegistration = () => {
                         <Btn type="submit" text="送信する" />
                     </form>
                     <div style={{
-                            marginTop:"40px",
-                            width: '100%',
-                        }}>
-                            <p>ログイン済みの方はこちら</p>
-                            <Btn type="button" text="ログインへ" onClick={()=> window.location.href = "./login"}/>
+                        marginTop:"40px",
+                        width: '100%',
+                    }}>
+                        <p>ログイン済みの方はこちら</p>
+                        <Btn type="button" text="ログインへ" onClick={() => window.location.href = "./login"} />
                     </div>
                 </>
             )}

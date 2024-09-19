@@ -45,7 +45,7 @@ const SelectFavorite = () => {
             } else {
                 setSuggestions([]);
             }
-        }, 1000); // 300ms debounce delay
+        }, 600); // 300ms debounce delay
 
         setDebounceTimeout(newTimeout);
     };

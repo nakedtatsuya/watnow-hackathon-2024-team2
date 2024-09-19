@@ -28,7 +28,7 @@ export default function Home() {
           display: "flex",
           flexFlow: "column",
         }}>
-          <Btn text={"ログイン"} type={"button"}/>
+          <Btn text={"ログイン"} type={"button"} onClick={()=> window.location.href = "/login"}/>
           <Btn type={"button"} text={"新規登録"} onClick={handleClick} />
         </div>
       </main>

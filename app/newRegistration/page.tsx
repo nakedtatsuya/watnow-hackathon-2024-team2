@@ -54,11 +54,11 @@ const NewRegistration = () => {
         
         // registerUserを呼び出してユーザーを登録
         await registerUser(data);
-        // setSubmitted(true); // フォーム送信時に状態を更新
+        setSubmitted(true); // フォーム送信時に状態を更新
     };
 
     const registerUser = async (data) => {
-        const response = await fetch('http://localhost:8000/register', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -74,10 +74,11 @@ const NewRegistration = () => {
             const responseData = await response.json();
             console.log(responseData);
             // localStorageにemailを保存
-            localStorage.setItem('userEmail', responseData.email);
+            localStorage.setItem('userEmail', responseData.user.email);
         } else {
             console.error('Registration failed');
             // エラーメッセージを表示するための状態管理を追加することも考慮
+            window.alert('登録に失敗しました');
         }
     };
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { Checkbox, FormControlLabel, FormControl, FormLabel } from '@mui/material';
 import Btn from "../components/Button"
@@ -59,7 +59,12 @@ const sample = [
 
 export default function SelectGenle() {
     const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
-    const [submitData, setSubmitData] = React.useState<string[]>([]);
+    const [submitData, setSubmitData] = React.useState<{
+        tags: string[], 
+        email:string}>({
+        tags: [],
+        email: ''
+        });
 
     const handleChange = (event) => {
         const { name, checked } = event.target;
@@ -70,10 +75,12 @@ export default function SelectGenle() {
     };
 
     const handleSubmit = () => {
+        const emailData = localStorage.getItem('userEmail');
+        if(emailData){
         const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
-        setSubmitData(selectedItems);
-        console.log(selectedItems);
+        setSubmitData({tags:selectedItems, email:emailData});
         window.location.href = '/selectFavorite';
+        }
     };
 
     return (

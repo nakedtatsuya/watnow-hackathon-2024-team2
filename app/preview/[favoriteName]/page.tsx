@@ -1,40 +1,84 @@
 "use client";
 
-import React from 'react';
+import React, { use, useEffect } from 'react';
 import xIcon from "../../images/x.png"; // Ensure this path is correct
 import spotifyIcon from "../../images/spotify.png"; // Ensure this path is correct
 import Image from 'next/image';
 import { Height, Widgets } from '@mui/icons-material';
 import Btn from '@/app/components/Button';
 import { colors } from '@mui/material';
+import { set } from 'react-hook-form';
+
+const sampleData = {
+    title: "YOASOBI",
+    genre: "音楽ユニット",
+    description: "YOASOBIは、日本の音楽ユニット。メンバーは、コンポーザーのAyaseとボーカルのikura。2019年に、ソニーミュージックが運営する小説&イラスト投稿サイト「monogatary.com」に投稿された小説を楽曲化するプロジェクトから誕生した",
+    image: "http://www.sonymusic.co.jp/adm_image/common/artist_image/90000/90055/profile_image/56696__0_0_0.jpg",
+    officialUrl: "https://www.yoasobi-music.jp/",
+    SNSlinks: [
+        {
+            name: "YouTube",
+            url: "https://www.youtube.com/c/YOASOBI",
+        },
+        {
+            name: "Spotify",
+            url: "https://open.spotify.com/artist/4nKm1uTqP8I0Kt3Iy6c9hY",
+        },
+        {
+            name: "X",
+            url: "https://x.com/YOASOBI_staff",
+        },
+        {
+            name: "Instagram",
+            url: "https://www.instagram.com/yoasobi_staff/",
+        }
+    ]
+};
 
 const Preview = ({ params }: { params: { favoriteName: string } }) => {
     const decodedFavoriteName = decodeURIComponent(params.favoriteName);
+    const [getData, setGetData] = React.useState({
+        email: "",
+        favoriteName: "",
+    }); 
+    const [submitData, setSubmitData] = React.useState({
+        email: "",
+        data:{
+            title: "",
+            genre: "",
+            description: "",
+            image: "",
+            officialUrl: "",
+            SNSlinks: [
+                {
+                    name: "",
+                    url: "",
+                },
+            ],
+        }
+    });
 
-    const sampleData = {
-        title: "YOASOBI",
-        genre: "音楽ユニット",
-        description: "YOASOBIは、日本の音楽ユニット。メンバーは、コンポーザーのAyaseとボーカルのikura。2019年に、ソニーミュージックが運営する小説&イラスト投稿サイト「monogatary.com」に投稿された小説を楽曲化するプロジェクトから誕生した",
-        image: "http://www.sonymusic.co.jp/adm_image/common/artist_image/90000/90055/profile_image/56696__0_0_0.jpg",
-        officialUrl: "https://www.yoasobi-music.jp/",
-        SNSlinks: [
-            {
-                name: "YouTube",
-                url: "https://www.youtube.com/c/YOASOBI",
-            },
-            {
-                name: "Spotify",
-                url: "https://open.spotify.com/artist/4nKm1uTqP8I0Kt3Iy6c9hY",
-            },
-            {
-                name: "X",
-                url: "https://x.com/YOASOBI_staff",
-            },
-            {
-                name: "Instagram",
-                url: "https://www.instagram.com/yoasobi_staff/",
-            }
-        ]
+    useEffect(() => {
+        const userEmail = localStorage.getItem("userEmail");
+        if (userEmail) {
+            setGetData({
+                email: userEmail,
+                favoriteName: decodedFavoriteName,
+            });
+        }
+        console.log(getData);
+    },[]);
+
+    const handleSubmit = () => {
+        const userEmail = localStorage.getItem("userEmail");
+        if (userEmail) {
+            setSubmitData({
+                email: userEmail,
+                data: sampleData,
+            });
+        }
+        console.log(submitData);
+        window.location.href = "/home";
     };
 
     const styles = {
@@ -180,7 +224,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             <div style={{
                 margin: '30px 0 10px 0',
             }}>
-                <Btn type={"button"} text={"ノートを作成"} onClick={() => window.location.href = "../home"}/>
+                <Btn type={"button"} text={"ノートを作成"} onClick={handleSubmit}/>
             </div>
             <Btn type={"button"} text={"検索画面に戻る"} onClick={() => window.location.href = "/selectFavorite"}/>
         </div>

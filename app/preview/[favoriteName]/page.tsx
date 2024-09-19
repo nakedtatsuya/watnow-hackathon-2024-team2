@@ -235,6 +235,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         image: {
             maxWidth: '100%',
             borderRadius: '8px',
+            maxHeight: '200px',
         },
         officialLinkLabel: {
             width: "80%",
@@ -283,13 +284,17 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
                         <div style={styles.titleContainer}>
                             <h1 style={styles.title}>{getData.oshi_name}</h1>
                         </div>
+                        {getData.profession !== "Profession not found" &&(
                         <div style={styles.titleContainer}>
                             <h2 style={styles.genre}>{getData.profession}</h2>
                         </div>
+                        )}
                         <img src={getData.image_url} alt={getData.oshi_name} style={styles.image} />
+                        {getData.summary !== "Summary not found" &&(
                         <div style={styles.descriptionContainer}>
                             <p style={styles.description}>{getData.summary}</p>
                         </div>
+                        )}
                         <div style={styles.titleContainer}>
                             <p style={styles.officialLinkLabel}>officialサイト</p>
                         </div>

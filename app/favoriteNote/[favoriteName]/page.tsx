@@ -78,13 +78,13 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             borderRadius: '8px',
         },
         officialLinkLabel: {
-            width: "74%",
+            width: "80%",
             fontSize: '0.875rem',
             marginTop: '15px',
             textAlign: "left",
         },
         officialLink: {
-            width: "74%",
+            width: "80%",
             fontSize: '0.875rem',
             textDecoration: 'underline',
             textAlign: "left",
@@ -96,7 +96,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             textAlign: "left",
         },
         snsContainer: {
-            width: "75%",
+            width: "80%",
             display: 'flex',
             fontSize: '0.875rem',
             textAlign: "left",
@@ -105,7 +105,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             width: '40px',
             height: '40px',
             borderRadius: '50%',
-            marginRight: '20px',
+            marginRight: '10px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -122,10 +122,10 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             <div style={styles.titleContainer}>
                 <h2 style={styles.genre}>{sampleData.genre}</h2>
             </div>
+            <img src={sampleData.image} alt="YOASOBI" style={styles.image} />
             <div style={styles.descriptionContainer}>
                 <p style={styles.description}>{sampleData.description}</p>
             </div>
-            <img src={sampleData.image} alt="YOASOBI" style={styles.image} />
             <div style={styles.titleContainer}>
                 <p style={styles.officialLinkLabel}>officialサイト</p>
             </div>

@@ -6,6 +6,7 @@ import { set, useForm } from "react-hook-form";
 import Btn from "../components/Button"; // コンポーネントのパスを修正
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";
+import { display, fontWeight } from "@mui/system";
 
 const styles = {
   container: {
@@ -23,16 +24,23 @@ const styles = {
   user: {
     display: "flex",
   },
+  p: {
+    margin: "10px",
+    fontWeight: "bold",
+  },
   h1: {
     fontFamily: "JPFont",
     marginLeft: "32px",
     marginTop: "165px",
     fontSize: "35px",
     fontWeight: "bold",
+    marginBottom: "14px",
   },
   h2: {
-    marginBottom: "10px",
-    fontSize: "24px",
+    marginLeft: "32px",
+    fontFamily: "JPFont",
+    marginBottom: "0px",
+    fontSize: "20px",
   },
   label: {
     backgroundColor: "#E6E6E6",
@@ -103,16 +111,20 @@ const NewRegistration = () => {
         >
           <h1 style={styles.h1}>ログイン</h1>
           <h2 style={styles.h2}>以下の内容で保存されました</h2>
-          <h2 style={styles.h2}>{formData.name}さん おかえりなさい！</h2>
+          <h2 style={styles.h2}>{formData.name}さん、おかえりなさい！</h2>
           <div style={styles.container}>
-            <p>ID: {formData.email}</p>
-            <p>パスワード: {formData.password}</p>
+            <div style={{ padding: "19px", margin: "0px" }}>
+              <p style={styles.p}>ID：{formData.email}</p>
+              <p style={styles.p}>パスワード：{formData.password}</p>
+            </div>
           </div>
-          <Btn
-            type="button"
-            text="はじめる"
-            onClick={() => (window.location.href = "./home")}
-          />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Btn
+              type="button"
+              text="はじめる"
+              onClick={() => (window.location.href = "./home")}
+            />
+          </div>
         </div>
       ) : (
         <>

@@ -108,6 +108,13 @@ const NewRegistration = () => {
                         </div>
                         <Btn type="submit" text="送信する" />
                     </form>
+                    <div style={{
+                            marginTop:"40px",
+                            width: '100%',
+                        }}>
+                            <p>ログイン済みの方はこちら</p>
+                            <Btn type="button" text="ログインへ" onClick={()=> window.location.href = "./login"}/>
+                    </div>
                 </>
             )}
         </div>

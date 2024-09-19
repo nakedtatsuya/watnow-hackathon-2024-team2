@@ -59,7 +59,7 @@ const NewRegistration = () => {
                 <div style={{
                     width: '100%',
                     display: 'flex',
-                        flexDirection: 'column',
+                    flexDirection: 'column',
                 }}>
                     <h1 style={styles.h1}>ログイン</h1>
                     <h2 style={styles.h2}>以下の内容で保存されました</h2>
@@ -99,6 +99,13 @@ const NewRegistration = () => {
                         </div>
                         <Btn type="submit" text="送信する" />
                     </form>
+                    <div style={{
+                            marginTop:"40px",
+                            width: '100%',
+                        }}>
+                            <p>まだ登録していない方はこちら</p>
+                            <Btn type="button" text="新規登録画面へ" onClick={()=> window.location.href = "./newRegistration"}/>
+                    </div>
                 </>
             )}
         </div>

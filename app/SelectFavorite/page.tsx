@@ -36,10 +36,10 @@ const SelectFavorite = () => {
             <div style={{
                 textAlign: 'center',
             }}>
-                <h2>あなたの好きなアーティストや</h2>
-                <h2>推しを教えてください</h2>
+                <h2 style={{fontFamily: 'JPFont', fontSize: '20px'}}>あなたの好きなアーティストや</h2>
+                <h2 style={{fontFamily: 'JPFont', fontSize: '20px'}}>推しを教えてください</h2>
             </div>
-            <div style={{ position: 'relative', width: '100%', maxWidth: '400px', marginBottom: "100px" }}>
+            <div style={{ position: 'relative', width: '100%', maxWidth: '328px', margin: "32px 0 100px 0" }}>
                 <SearchBar value={inputText} onChange={handleChange} />
                 {suggestions.length > 0 && (
                     <div style={{
@@ -55,6 +55,7 @@ const SelectFavorite = () => {
                         <ul style={{ listStyleType: 'none', padding: '0', margin: '0' }}>
                             {suggestions.map((suggestion) => (
                                 <li key={suggestion} style={{
+                                    width: '328px',
                                     padding: '10px',
                                     cursor: 'pointer',
                                     transition: 'background-color 0.3s',
@@ -81,15 +82,16 @@ const SelectFavorite = () => {
             }}>
                 {sampleTags.map((tag) => (
                     <span key={tag} style={{
+                        fontFamily: 'JPFont',
                         backgroundColor: 'white',
                         color: 'black',
                         border: '1px solid #ccc',
                         borderRadius: '20px',
                         display: 'flex',
-                        margin: '0',
+                        margin: '5px',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        width: 'calc(50% - 15px)',
+                        width: '150px',
                         height: '40px',
                     }}>
                         {tag}

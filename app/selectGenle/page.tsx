@@ -74,14 +74,41 @@ export default function SelectGenle() {
         }));
     };
 
-    const handleSubmit = () => {
-        const emailData = localStorage.getItem('userEmail');
-        if(emailData){
-        const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
-        setSubmitData({tags:selectedItems, email:emailData});
-        window.location.href = '/selectFavorite';
+    const registerGenles = async (data) => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/select-genres`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: data.email,
+                genres: data.tags,
+            }),
+        });
+    
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log(responseData);
+        } else {
+            console.error('Registration failed');
         }
     };
+
+    const handleSubmit = async () => {
+        const emailData = localStorage.getItem('userEmail');
+        if (emailData) {
+            const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
+            setSubmitData({ tags: selectedItems, email: emailData });
+    
+            // submitDataが更新された後にregisterGenlesを呼び出す
+            const currentSubmitData = { tags: selectedItems, email: emailData };
+            await registerGenles(currentSubmitData);
+            window.location.href = '/selectFavorite';
+        } else {
+            console.log('email is not found');
+        }
+    };
+    
 
     return (
         <>

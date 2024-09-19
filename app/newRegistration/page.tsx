@@ -4,10 +4,9 @@ import Image from "next/image";
 import React from "react";
 import { set, useForm } from "react-hook-form";
 import Btn from "../components/Button"; // コンポーネントのパスを修正
-import { Padding } from "@mui/icons-material";
-import pen from "../images/reg1.png";
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";
+import { display, fontWeight } from "@mui/system";
 
 const styles = {
   container: {
@@ -25,24 +24,30 @@ const styles = {
   user: {
     display: "flex",
   },
+  p: {
+    margin: "10px",
+    fontWeight: "bold",
+  },
   h1: {
     fontFamily: "JPFont",
     marginLeft: "32px",
     marginTop: "165px",
-    fontSize: "32px",
+    fontSize: "35px",
     fontWeight: "bold",
+    marginBottom: "14px",
   },
   h2: {
     marginLeft: "32px",
     fontFamily: "JPFont",
-    marginBottom: "10px",
-    fontSize: "24px",
+    marginBottom: "0px",
+    fontSize: "20px",
   },
   label: {
     backgroundColor: "#E6E6E6",
     width: "100%",
     borderTopRightRadius: "20px",
     display: "flex",
+    paddingLeft: "10px",
     padding: "10px",
     fontsize: "14px",
     fontFamily: "JPFont",
@@ -54,24 +59,23 @@ const styles = {
     width: "100%",
     display: "flex",
     padding: "10px",
+    paddingLeft: "10px",
     fontsize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
   },
   input: {
-    fontFamily: "JPFont",
     width: "100%",
     padding: "10px",
-    margin: "0px 60px 0px 0px",
-    border: "1px solid #FFF",
+    border: "1px solid #E6E6E6",
   },
   input2: {
     fontFamily: "JPFont",
     width: "100%",
     padding: "10px",
     margin: "0px 60px 0px 0px",
-    border: "1px solid #FFF",
+    border: "1px solid #E6E6E6",
     borderBottomLeftRadius: "20px",
     borderBottomRightRadius: "20px",
   },
@@ -85,7 +89,6 @@ const NewRegistration = () => {
   } = useForm();
   const [submitted, setSubmitted] = React.useState(false);
   const [formData, setFormData] = React.useState({
-    name: "",
     email: "",
     password: "",
   });
@@ -106,26 +109,28 @@ const NewRegistration = () => {
             flexDirection: "column",
           }}
         >
-          <h1 style={styles.h1}>新規登録</h1>
-          <h2 style={styles.h2}>登録が完了しました</h2>
+          <h1 style={styles.h1}>ログイン</h1>
+          <h2 style={styles.h2}>以下の内容で保存されました</h2>
+          <h2 style={styles.h2}>{formData.name}さん、おかえりなさい！</h2>
           <div style={styles.container}>
-            <p>{formData.name}さん</p>
-            <p>ID: {formData.email}</p>
-            <p>パスワード: {formData.password}</p>
+            <div style={{ padding: "19px", margin: "0px" }}>
+              <p style={styles.p}>ID：{formData.email}</p>
+              <p style={styles.p}>パスワード：{formData.password}</p>
+            </div>
           </div>
-          <Btn
-            type="button"
-            text="はじめる"
-            onClick={() => (window.location.href = "./selectGenle")}
-          />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Btn
+              type="button"
+              text="はじめる"
+              onClick={() => (window.location.href = "./home")}
+            />
+          </div>
         </div>
       ) : (
         <>
-          <h1 style={styles.h1}>新規登録</h1>
-          <h2 style={styles.h2}>アカウントを作成する</h2>
+          <h1 style={styles.h1}>ログイン</h1>
           <form
             style={{
-              fontFamily: "JPFont",
               width: "100%",
               display: "flex",
               flexDirection: "column",
@@ -137,29 +142,14 @@ const NewRegistration = () => {
                 <Image
                   style={{
                     backgroundColor: "#E6E6E6",
-                    borderTopLeftRadius: "20px",
                     padding: "13px",
+                    borderTopLeftRadius: "20px",
                   }}
-                  src={pen}
-                  alt="pen"
-                  width={50}
-                />
-                <label style={styles.label}>ユーザー名</label>
-              </div>
-              <input
-                type="text"
-                {...register("name", { required: "ユーザー名は必須です" })}
-                style={styles.input}
-                placeholder="ユーザー名を入力してください"
-              />
-              <div style={styles.user}>
-                <Image
-                  style={{ backgroundColor: "#E6E6E6", padding: "13px" }}
                   src={mail}
                   alt="mail"
                   width={50}
                 />
-                <label style={styles.label2}>ID</label>
+                <label style={styles.label}>ID</label>
               </div>
               <input
                 type="text"
@@ -174,7 +164,9 @@ const NewRegistration = () => {
                 placeholder="メールアドレスを入力してください"
               />
               {errors.email && (
-                <p style={{ color: "red", padding: '10px' }}>{errors.email.message}</p>
+                <p style={{ color: "red", padding: "10px" }}>
+                  {errors.email.message}
+                </p>
               )}
               <div style={styles.user}>
                 <Image
@@ -198,7 +190,9 @@ const NewRegistration = () => {
                 placeholder="パスワードを入力してください"
               />
               {errors.password && (
-                <p style={{ color: "red" , padding: '10px'}}>{errors.password.message}</p>
+                <p style={{ color: "red", padding: "10px" }}>
+                  {errors.password.message}
+                </p>
               )}
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
@@ -214,11 +208,13 @@ const NewRegistration = () => {
               width: "100%",
             }}
           >
-            <p style={{ fontFamily: "JPFont" }}>ログイン済みの方はこちら</p>
+            <p style={{ fontFamily: "JPFont " }}>
+              まだ登録していない方はこちら
+            </p>
             <Btn
               type="button"
-              text="ログインへ"
-              onClick={() => (window.location.href = "./login")}
+              text="新規登録画面へ"
+              onClick={() => (window.location.href = "./newRegistration")}
             />
           </div>
         </>

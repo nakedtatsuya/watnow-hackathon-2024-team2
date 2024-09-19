@@ -17,13 +17,28 @@ export default function Header() {
                 boxShadow: 'none',
                 height: "90px",
             }}>
-                <Toolbar variant="dense" sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
+                <Toolbar variant="dense" sx={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    height: '100%',
+                    width: "100%",
+                    justifyContent: "center",
+                    alignItems: "flex-end",
+                  }}>
                     <Typography variant="h6" color="inherit" component="div" sx={{ display: 'flex', alignItems: 'center' }}>
-                        <button style={{ color: 'blue', border: 'none', background: 'none', cursor: 'pointer', marginRight: "10px" }}>
+                        <button style={{ 
+                            color: 'blue', border: 'none', background: 'none', cursor: 'pointer', marginBottom: "10 px" }}>
                             編集
                         </button>
                     </Typography>
-                    <Typography variant="h6" sx={{ flexGrow: 1, textAlign: 'center', fontWeight: 'bold' }}>
+                    <Typography variant="h6" sx={{ 
+                        height: '100%',
+                         flexGrow: 1, 
+                         display: 'flex', 
+                         justifyContent: 'center',
+                         alignItems: 'flex-end', 
+                         fontWeight: 'bold',
+                         marginBottom: '20px' }}>
                         推し一覧
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>

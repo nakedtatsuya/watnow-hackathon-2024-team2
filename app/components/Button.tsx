@@ -17,7 +17,8 @@ const theme = createTheme({
           borderRadius:"50px",
           backgroundColor: '#FFF',
           color: 'black',
-          marginTop: '20px',
+          fontFamily: "JPfont",
+          marginTop: '15px',
           '&:hover': {
             backgroundColor: '#F5F5F5',
             color: '#000'

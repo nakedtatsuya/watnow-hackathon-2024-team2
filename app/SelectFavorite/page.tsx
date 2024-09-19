@@ -1,27 +1,87 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import SearchBar from "../components/SearchBar";
 import Link from 'next/link';
 
 const SelectFavorite = () => {
     const [inputText, setInputText] = useState<string>('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [genles, setGenles] = useState<string[]>([]);
+    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
 
-    const sampleTags = ["音楽", "小説", "漫画", "ラジオ"];
-    const sampleSuggestions = ["アーティストA", "アーティストB", "小説C", "漫画D"];
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setInputText(value);
 
-        if (value) {
-            const filteredSuggestions = sampleSuggestions.filter(suggestion =>
-                suggestion.includes(value)
-            );
-            setSuggestions(filteredSuggestions);
-        } else {
-            setSuggestions([]);
+        // Clear previous timeout if it exists
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
+        }
+
+        // Set a new timeout for the debounce
+        const newTimeout = setTimeout(async () => {
+            if (value) {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search-oshi`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ query: value }),
+                    });
+
+                    if (response.ok) {
+                        const suggestionsData = await response.json();
+                        setSuggestions(suggestionsData.titles);
+                    } else {
+                        console.error('Failed to fetch suggestions');
+                        setSuggestions([]);
+                    }
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                    setSuggestions([]);
+                }
+            } else {
+                setSuggestions([]);
+            }
+        }, 1000); // 300ms debounce delay
+
+        setDebounceTimeout(newTimeout);
+    };
+
+    useEffect(() => {
+        const fetchGenres = async () => {
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                await getGenles({ email: userEmail });
+            }
+        };
+        fetchGenres();
+    }, []);
+
+    const getGenles = async (data) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-user-genres`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: data.email,
+                }),
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                setGenles(responseData);
+            } else {
+                console.error('Failed to fetch genres');
+                setGenles([]);
+            }
+        } catch (error) {
+            console.error('Error fetching genres:', error);
+            setGenles([]);
         }
     };
 
@@ -33,9 +93,7 @@ const SelectFavorite = () => {
             justifyContent: 'center',
             alignItems: 'center',
         }}>
-            <div style={{
-                textAlign: 'center',
-            }}>
+            <div style={{ textAlign: 'center' }}>
                 <h2>あなたの好きなアーティストや</h2>
                 <h2>推しを教えてください</h2>
             </div>
@@ -79,7 +137,7 @@ const SelectFavorite = () => {
                 gap: '10px',
                 margin: "0"
             }}>
-                {sampleTags.map((tag) => (
+                {genles.map((tag) => (
                     <span key={tag} style={{
                         backgroundColor: 'white',
                         color: 'black',

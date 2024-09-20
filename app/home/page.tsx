@@ -60,7 +60,15 @@ const Home = () => {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       {loading ? (
-        <div>Loading...</div>
+        <div style={{
+          display: 'flex',
+          fontSize: '2rem',
+            textAlign: 'center',
+            margin: '20px 0',
+            height:"100vh",
+            alignItems:"center",
+            justifyContent:"center",
+        }}>Loading...</div>
       ) : (
         <>
           <Header />

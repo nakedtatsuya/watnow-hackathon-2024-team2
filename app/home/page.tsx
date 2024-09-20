@@ -5,7 +5,13 @@ import Header from "../components/Header";
 import Link from "next/link";
 
 const Home = () => {
-  const [groupedData, setGroupedData] = useState<{ [key: string]: any[] }>({});
+  const [groupedData, setGroupedData] = useState<{ [key: string]: 
+    {
+      oshi_name: string;
+      image_url: string;
+      genre: string;
+    }[]
+   }>({});
   const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
@@ -36,9 +42,15 @@ const Home = () => {
 
       if (response.ok) {
         const responseData = await response.json();
-        const oshiArray = responseData.oshi; // Access the oshi array
+        const oshiArray = responseData.oshi;
 
-        const grouped = oshiArray.reduce((acc: { [key: string]: any[] }, item: { genre: string }) => {
+        const grouped = oshiArray.reduce((acc: { [key: string]: 
+          {
+            oshi_name: string;
+            image_url: string;
+            genre: string;
+          }[]
+         }, item: { oshi_name: string; image_url: string; genre: string }) => {
           if (!acc[item.genre]) {
             acc[item.genre] = [];
           }

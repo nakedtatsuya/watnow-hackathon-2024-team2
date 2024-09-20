@@ -11,7 +11,7 @@ import {
 import Btn from "../components/Button";
 
 // スタイル付きチェックボックス
-const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+const CustomCheckbox = styled(Checkbox)(() => ({
     display: "none", // 元のチェックボックスを非表示にする
 }));
 
@@ -89,13 +89,6 @@ const sample = [
 
 export default function SelectGenle() {
     const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
-    const [submitData, setSubmitData] = React.useState<{
-        tags: string[],
-        email: string
-    }>({
-        tags: [],
-        email: ''
-    });
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
@@ -118,7 +111,6 @@ export default function SelectGenle() {
         });
 
         if (response.ok) {
-            const responseData = await response.json();
             window.location.href = '/selectFavorite';
         } else {
             console.error('Registration failed');
@@ -129,7 +121,6 @@ export default function SelectGenle() {
         const emailData = localStorage.getItem('userEmail');
         if (emailData) {
             const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
-            setSubmitData({ tags: selectedItems, email: emailData });
     
             // submitDataが更新された後にregisterGenlesを呼び出す
             const currentSubmitData = { tags: selectedItems, email: emailData };

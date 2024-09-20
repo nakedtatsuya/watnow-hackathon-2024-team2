@@ -14,7 +14,7 @@ import { styled } from "@mui/material/styles";
 import { CSSProperties } from 'react';
 
 // スタイル付きチェックボックス
-const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+const CustomCheckbox = styled(Checkbox)(() => ({
     display: "none", // 元のチェックボックスを非表示にする
 }));
 
@@ -142,7 +142,6 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         });
 
         if (response.ok) {
-            const responseData = await response.json();
             window.location.href = "/home";
         } else {
             setSubmitting(false);
@@ -189,7 +188,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
-        setCheckedItems((prev) => ({
+        setCheckedItems(() => ({
             [name]: checked,
         }));
     };

@@ -59,7 +59,7 @@ export default function SearchBar({ value = '', onChange = () => {} }: SearchBar
           }}
         />
       </SearchIconWrapper>
-      <StyledInputBase placeholder='検索' inputProps={{ 'aria-label': 'search' }} value={value} onChange={onChange} />
+      <StyledInputBase placeholder='推しを検索' inputProps={{ 'aria-label': 'search' }} value={value} onChange={onChange} />
     </Search>
   );
 }

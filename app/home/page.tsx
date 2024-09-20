@@ -93,7 +93,7 @@ const Home = () => {
                           }}
                         />
                       </div>
-                      <div style={{ display: "flex", flexDirection: "column", width:"100%" }}>
+                      <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
                         <p
                           style={{
                             fontSize: "1.2rem",
@@ -110,34 +110,34 @@ const Home = () => {
               </div>
             ))}
           </div>
+          <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+            <button
+              style={{
+                position: "absolute",
+                bottom: "20px",
+                width: "76px",
+                height: "76px",
+                borderRadius: "50%",
+                background: "conic-gradient(#EAC46A, #D5FCD5, #6C97EC, #0731FB, #7634DB, #FF44AA, #FF6E49, #FF8E03, #EAC463)",
+                fontSize: "56px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                color: "transparent",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                transition: "transform 0.2s",
+              }}
+              onClick={() => (window.location.href = "/selectFavorite")}
+              onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
+              onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              +
+            </button>
+          </div>
         </>
       )}
-      <div style={{ display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
-        <button
-          style={{
-            position: "absolute",
-            bottom: "20px",
-            width: "76px",
-            height: "76px",
-            borderRadius: "50%",
-            background: "conic-gradient(#EAC46A, #D5FCD5, #6C97EC, #0731FB, #7634DB, #FF44AA, #FF6E49, #FF8E03, #EAC463)",
-            fontSize: "56px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            cursor: "pointer",
-            color: "transparent",
-            backgroundClip: "text",
-            WebkitBackgroundClip: "text",
-            transition: "transform 0.2s",
-          }}
-          onClick={() => (window.location.href = "/selectFavorite")}
-          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-        >
-          +
-        </button>
-      </div>
     </div>
   );
 };

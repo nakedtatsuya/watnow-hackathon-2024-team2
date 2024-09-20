@@ -12,6 +12,7 @@ import {
     FormLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
+import { CSSProperties } from 'react';
 
 // スタイル付きチェックボックス
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
@@ -92,7 +93,11 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         fetchFavorite();
     }, []);
 
-    const getFavorite = async (data) => {
+    const getFavorite = async (data:
+        {
+            oshi_name: string;
+        }
+    ) => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/fetch-oshi-info`, {
                 method: 'POST',
@@ -117,7 +122,13 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         }
     };
 
-    const setFavorite = async (data) => {
+    const setFavorite = async (data:
+        {
+            email: string;
+            oshi_name: string;
+            genre: string;
+        }
+    ) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-oshi-info-and-genres`, {
             method: 'POST',
             headers: {
@@ -139,7 +150,11 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         }
     };
 
-    const getGenles = async (data) => {
+    const getGenles = async (data:
+        {
+            email: string;
+        }
+    ) => {
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-user-genres`, {
                 method: 'POST',
@@ -148,7 +163,6 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
                 },
                 body: JSON.stringify({
                     email: data.email,
-                    oshi_name: data.oshi_name,
                 }),
             });
 
@@ -173,7 +187,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         }
     };
 
-    const handleChange = (event) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
         setCheckedItems((prev) => ({
             [name]: checked,
@@ -191,7 +205,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         }
     };
 
-    const styles = {
+    const styles: { [key: string]: CSSProperties } = {
         container: {
             display: 'flex',
             flexDirection: 'column',
@@ -307,7 +321,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
                         <div style={styles.titleContainer}>
                             <div style={styles.snsContainer}>
                                 {Object.entries(getData.sns_links).map(([name, url]) => (
-                                    <a key={name} href={url} target="_blank" rel="noopener noreferrer" style={styles.snsButton}>
+                                    <a key={name} href={url as string} target="_blank" rel="noopener noreferrer" style={styles.snsButton}>
                                         {name === "youtube" ? (
                                             <Image src={"https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png"} alt={name} width={25} height={25} unoptimized />
                                         ) : name === "spotify" ? (

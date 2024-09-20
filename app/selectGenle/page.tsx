@@ -97,7 +97,7 @@ export default function SelectGenle() {
         email: ''
     });
 
-    const handleChange = (event) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, checked } = event.target;
         setCheckedItems((prev) => ({
             ...prev,
@@ -105,7 +105,7 @@ export default function SelectGenle() {
         }));
     };
 
-    const registerGenles = async (data) => {
+    const registerGenles = async (data: { email: string; tags: string[] }) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/select-genres`, {
             method: 'POST',
             headers: {

@@ -95,7 +95,9 @@ const NewRegistration = () => {
     password: "",
   });
 
-    const onSubmit = async (data) => {
+    const onSubmit = async (data:
+        { name: string; email: string; password: string }
+    ) => {
         console.log(data); // ここでデータを確認
         setFormData(data); // データを更新
         
@@ -104,7 +106,9 @@ const NewRegistration = () => {
         setSubmitted(true); // フォーム送信時に状態を更新
     };
 
-    const registerUser = async (data) => {
+    const registerUser = async (data:
+        { name: string; email: string; password: string }
+    ) => {
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
             method: 'POST',
             headers: {

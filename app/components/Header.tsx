@@ -26,7 +26,6 @@ export default function Header() {
             display: "flex",
             justifyContent: "space-between",
             height: "100%",
-            justifyContent: "center",
             alignItems: "flex-end",
           }}
         >

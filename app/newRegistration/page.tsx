@@ -8,8 +8,9 @@ import { Padding } from "@mui/icons-material";
 import pen from "../images/reg1.png";
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";
+import { CSSProperties } from 'react';
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     fontFamily: "JPFont",
     width: "328px",
@@ -49,7 +50,7 @@ const styles = {
     borderTopRightRadius: "20px",
     display: "flex",
     padding: "10px",
-    fontsize: "14px",
+    fontSize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
@@ -59,7 +60,7 @@ const styles = {
     width: "100%",
     display: "flex",
     padding: "13px",
-    fontsize: "14px",
+    fontSize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
@@ -87,7 +88,7 @@ const NewRegistration = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<{ name: string; email: string; password: string }>();
   const [submitted, setSubmitted] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: "",
@@ -95,12 +96,43 @@ const NewRegistration = () => {
     password: "",
   });
 
-  const onSubmit = (data) => {
-    console.log(data); // ここでデータを確認
-    setFormData(data); // データを更新
-    setSubmitted(true); // フォーム送信時に状態を更新
-  };
+    const onSubmit = async (data:
+        { name: string; email: string; password: string }
+    ) => {
+        console.log(data); // ここでデータを確認
+        setFormData(data); // データを更新
+        
+        // registerUserを呼び出してユーザーを登録
+        await registerUser(data);
+        setSubmitted(true); // フォーム送信時に状態を更新
+    };
 
+    const registerUser = async (data:
+        { name: string; email: string; password: string }
+    ) => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: data.email,
+                password: data.password,
+                username: data.name, // userNameを適切にマッピング
+            }),
+        });
+    
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log(responseData);
+            // localStorageにemailを保存
+            localStorage.setItem('userEmail', responseData.user.email);
+        } else {
+            console.error('Registration failed');
+            // エラーメッセージを表示するための状態管理を追加することも考慮
+            window.alert('登録に失敗しました');
+        }
+    };
   return (
     <div>
       {submitted ? (

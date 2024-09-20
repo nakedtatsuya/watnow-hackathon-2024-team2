@@ -3,16 +3,16 @@
 import React from "react";
 import { styled } from "@mui/material/styles";
 import {
-  Checkbox,
-  FormControlLabel,
-  FormControl,
-  FormLabel,
+    Checkbox,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
 } from "@mui/material";
 import Btn from "../components/Button";
 
 // スタイル付きチェックボックス
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
-  display: "none", // 元のチェックボックスを非表示にする
+    display: "none", // 元のチェックボックスを非表示にする
 }));
 
 // チェックボックスラベルのスタイル
@@ -64,51 +64,81 @@ const CustomFormControlLabel = styled(FormControlLabel, {
 
 // チェックボックスラベルのコンテナ
 const CheckboxContainer = styled("div")({
-  display: "flex",
-  flexWrap: "wrap",
-  justifyContent: "center",
-  gap: "29px",
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: "29px",
 });
 
 const sample = [
-  { id: 1, label: "音楽/Music", value: "音楽" },
-  { id: 2, label: "小説/Nobels", value: "小説" },
-  { id: 3, label: "漫画/manga", value: "漫画" },
-  { id: 4, label: "ラジオ/Radio Shows", value: "ラジオ" },
-  { id: 5, label: "アイドル/Idols", value: "アイドル" },
-  { id: 6, label: "お笑い/Comedy", value: "お笑い" },
-  { id: 7, label: "映画/Movies", value: "映画" },
-  { id: 8, label: "舞台/Theater", value: "舞台" },
-  { id: 9, label: "テレビドラマ/TV Dramas", value: "テレビドラマ" },
-  { id: 10, label: "ミュージカル/Musicals", value: "ミュージカル" },
-  { id: 11, label: "アニメ/Anime", value: "アニメ" },
-  { id: 12, label: "ダンス/Dance", value: "ダンス" },
-  { id: 13, label: "ゲーム/Video Games", value: "ゲーム" },
-  { id: 14, label: "ファッション/Fashion", value: "ファッション" },
+    { id: 1, label: "音楽/Music", value: "音楽" },
+    { id: 2, label: "小説/Nobels", value: "小説" },
+    { id: 3, label: "漫画/manga", value: "漫画" },
+    { id: 4, label: "ラジオ/Radio Shows", value: "ラジオ" },
+    { id: 5, label: "アイドル/Idols", value: "アイドル" },
+    { id: 6, label: "お笑い/Comedy", value: "お笑い" },
+    { id: 7, label: "映画/Movies", value: "映画" },
+    { id: 8, label: "舞台/Theater", value: "舞台" },
+    { id: 9, label: "テレビドラマ/TV Dramas", value: "テレビドラマ" },
+    { id: 10, label: "ミュージカル/Musicals", value: "ミュージカル" },
+    { id: 11, label: "アニメ/Anime", value: "アニメ" },
+    { id: 12, label: "ダンス/Dance", value: "ダンス" },
+    { id: 13, label: "ゲーム/Video Games", value: "ゲーム" },
+    { id: 14, label: "ファッション/Fashion", value: "ファッション" },
 ];
 
 export default function SelectGenle() {
-  const [checkedItems, setCheckedItems] = React.useState<{
-    [key: string]: boolean;
-  }>({});
-  const [submitData, setSubmitData] = React.useState<string[]>([]);
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
+    const [submitData, setSubmitData] = React.useState<{
+        tags: string[],
+        email: string
+    }>({
+        tags: [],
+        email: ''
+    });
 
-  const handleChange = (event) => {
-    const { name, checked } = event.target;
-    setCheckedItems((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, checked } = event.target;
+        setCheckedItems((prev) => ({
+            ...prev,
+            [name]: checked,
+        }));
+    };
 
-  const handleSubmit = () => {
-    const selectedItems = Object.keys(checkedItems).filter(
-      (key) => checkedItems[key]
-    );
-    setSubmitData(selectedItems);
-    console.log(selectedItems);
-    window.location.href = "/selectFavorite";
-  };
+    const registerGenles = async (data: { email: string; tags: string[] }) => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/select-genres`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: data.email,
+                genres: data.tags,
+            }),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log(responseData);
+        } else {
+            console.error('Registration failed');
+        }
+    };
+
+    const handleSubmit = async () => {
+        const emailData = localStorage.getItem('userEmail');
+        if (emailData) {
+            const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
+            setSubmitData({ tags: selectedItems, email: emailData });
+    
+            // submitDataが更新された後にregisterGenlesを呼び出す
+            const currentSubmitData = { tags: selectedItems, email: emailData };
+            await registerGenles(currentSubmitData);
+            window.location.href = '/selectFavorite';
+        } else {
+            console.log('email is not found');
+        }
+    };
 
   return (
     <>

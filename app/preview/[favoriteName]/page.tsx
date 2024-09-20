@@ -1,43 +1,211 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import xIcon from "../../images/x.png"; // Ensure this path is correct
 import spotifyIcon from "../../images/spotify.png"; // Ensure this path is correct
 import Image from 'next/image';
-import { Height, Widgets } from '@mui/icons-material';
 import Btn from '@/app/components/Button';
-import { colors } from '@mui/material';
+import {
+    Checkbox,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { CSSProperties } from 'react';
+
+// スタイル付きチェックボックス
+const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+    display: "none", // 元のチェックボックスを非表示にする
+}));
+
+// チェックボックスラベルのスタイル
+const CustomFormControlLabel = styled(FormControlLabel, { shouldForwardProp: (prop) => prop !== 'checked' })(
+    ({ theme, checked }) => ({
+        position: 'relative',
+        display: 'flex',
+        margin: '0',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 'calc(40% - 14px)',
+        padding: '20px',
+        marginRight: '20px',
+        height: '40px',
+        border: '1.8px solid #000',
+        borderRadius: '20px',
+        backgroundColor: theme.palette.common.white, // クリック後も最初も完全に白
+        cursor: 'pointer',
+        transition: 'background-color 0.6s ease, color 0.6s ease', // 背景色と文字色の遷移をゆっくり
+        color: theme.palette.text.primary, // クリック後も黒文字
+        '&:hover': {
+            backgroundColor: theme.palette.grey[300], // ホバー時はグレー
+        },
+        '&::before': {
+            content: '""',
+            position: 'absolute',
+            top: '-2px',
+            right: '-2px',
+            bottom: '-2px',
+            left: '-2px',
+            borderRadius: 'inherit',
+            padding: '2.7px',
+            background: 'conic-gradient(#EAC46A, #D5FCD5, #6C97EC, #0731FB, #7634DB, #FF44AA,#FF6E49,#FF8E03,#EAC463)', // 虹色ボーダー風の背景
+            opacity: checked ? 1 : 0, // クリック後は透明度を変更して遷移
+            transition: 'opacity 0.6s ease', // opacityに対して遷移を適用
+            '-webkit-mask':
+                'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)', // 背景色がボーダーになるようにする
+            mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+            maskComposite: 'exclude',
+        },
+    })
+);
+
+
+//          ? 'conic-gradient(#FE6658, #FFDA85, #90FFA2, #002AFF, #7B35DA, #FF40B2, #FE6658)' // 虹色ボーダー風の背景
+
+// チェックボックスラベルのコンテナ
+const CheckboxContainer = styled("div")({
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: "29px",
+});
 
 const Preview = ({ params }: { params: { favoriteName: string } }) => {
-    const decodedFavoriteName = decodeURIComponent(params.favoriteName);
+    const [getData, setGetData] = useState({
+        oshi_name: "",
+        profession: "",
+        summary: "",
+        image_url: "",
+        official_site_url: "",
+        sns_links: {}, // オブジェクト形式
+    });
+    const [isLoading, setIsLoading] = useState(true); // ローディングステート
+    const [genles, setGenles] = useState<string[]>([]);
+    const [submitted, setSubmitted] = useState(false);
+    const [checkedItems, setCheckedItems] = React.useState<{ [key: string]: boolean }>({});
 
-    const sampleData = {
-        title: "YOASOBI",
-        genre: "音楽ユニット",
-        description: "YOASOBIは、日本の音楽ユニット。メンバーは、コンポーザーのAyaseとボーカルのikura。2019年に、ソニーミュージックが運営する小説&イラスト投稿サイト「monogatary.com」に投稿された小説を楽曲化するプロジェクトから誕生した",
-        image: "http://www.sonymusic.co.jp/adm_image/common/artist_image/90000/90055/profile_image/56696__0_0_0.jpg",
-        officialUrl: "https://www.yoasobi-music.jp/",
-        SNSlinks: [
-            {
-                name: "YouTube",
-                url: "https://www.youtube.com/c/YOASOBI",
-            },
-            {
-                name: "Spotify",
-                url: "https://open.spotify.com/artist/4nKm1uTqP8I0Kt3Iy6c9hY",
-            },
-            {
-                name: "X",
-                url: "https://x.com/YOASOBI_staff",
-            },
-            {
-                name: "Instagram",
-                url: "https://www.instagram.com/yoasobi_staff/",
+    useEffect(() => {
+        const decodedFavoriteName = decodeURIComponent(params.favoriteName);
+        const fetchFavorite = async () => {
+            await getFavorite({ oshi_name: decodedFavoriteName });
+        };
+        fetchFavorite();
+    }, []);
+
+    const getFavorite = async (data:
+        {
+            oshi_name: string;
+        }
+    ) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/fetch-oshi-info`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    oshi_name: data.oshi_name,
+                }),
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                setGetData(responseData);
+            } else {
+                console.error('Failed to fetch genres');
             }
-        ]
+        } catch (error) {
+            console.error('Error fetching genres:', error);
+        } finally {
+            setIsLoading(false); // データ取得後にローディングを終了
+        }
     };
 
-    const styles = {
+    const setFavorite = async (data:
+        {
+            email: string;
+            oshi_name: string;
+            genre: string;
+        }
+    ) => {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/save-oshi-info-and-genres`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: data.email,
+                oshi_name: data.oshi_name,
+                genre: data.genre,
+            }),
+        });
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log(responseData);
+            window.location.href = "/home";
+        } else {
+            console.error('Registration failed');
+        }
+    };
+
+    const getGenles = async (data:
+        {
+            email: string;
+        }
+    ) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-user-genres`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: data.email,
+                }),
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                setGenles(responseData);
+            } else {
+                console.error('Failed to fetch genres');
+                setGenles([]);
+            }
+        } catch (error) {
+            console.error('Error fetching genres:', error);
+            setGenles([]);
+        }
+    };
+
+    const handleDisplayChange = async () => {
+        const userEmail = localStorage.getItem('userEmail');
+        if (userEmail) {
+            await getGenles({ email: userEmail });
+            setSubmitted(true);
+        }
+    };
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, checked } = event.target;
+        setCheckedItems((prev) => ({
+            [name]: checked,
+        }));
+    };
+
+    const handleSubmit = async () => {
+        const userEmail = localStorage.getItem("userEmail");
+        const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
+        if (userEmail) {
+            const submitData = { email: userEmail, oshi_name: getData.oshi_name, genre:selectedItems[0] };
+            await setFavorite(submitData);
+        } else {
+            console.log("email is not found");
+        }
+    };
+
+    const styles: { [key: string]: CSSProperties } = {
         container: {
             display: 'flex',
             flexDirection: 'column',
@@ -46,6 +214,11 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             maxWidth: '600px',
             height: '100vh',
             color: '#4F4F4F',
+        },
+        loading: {
+            fontSize: '2rem',
+            textAlign: 'center',
+            margin: '20px 0',
         },
         title: {
             width: "80%",
@@ -76,6 +249,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         image: {
             maxWidth: '100%',
             borderRadius: '8px',
+            maxHeight: '200px',
         },
         officialLinkLabel: {
             width: "80%",
@@ -116,73 +290,95 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
 
     return (
         <div style={styles.container}>
-            <div style={styles.titleContainer}>
-                <h1 style={styles.title}>{sampleData.title}</h1>
-            </div>
-            <div style={styles.titleContainer}>
-                <h2 style={styles.genre}>{sampleData.genre}</h2>
-            </div>
-            <img src={sampleData.image} alt="YOASOBI" style={styles.image} />
-            <div style={styles.descriptionContainer}>
-                <p style={styles.description}>{sampleData.description}</p>
-            </div>
-            <div style={styles.titleContainer}>
-                <p style={styles.officialLinkLabel}>officialサイト</p>
-            </div>
-            <div style={styles.titleContainer}>
-                <a href={`${sampleData.officialUrl}`} style={styles.officialLink}>{sampleData.officialUrl}</a>
-            </div>
-            <div style={styles.titleContainer}>
-                <p style={styles.officialLinkLabel}>SNSリンク</p>
-            </div>
-            <div style={styles.titleContainer}>
-                <div style={styles.snsContainer}>
-                    {sampleData.SNSlinks.map((link) => (
-                        <a
-                            key={link.name}
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={styles.snsButton}
+            {isLoading ? (
+                <div style={styles.loading}>Loading...</div>
+            ) : (
+                !submitted ? (
+                    <>
+                        <div style={styles.titleContainer}>
+                            <h1 style={styles.title}>{getData.oshi_name}</h1>
+                        </div>
+                        {getData.profession !== "Profession not found" &&(
+                        <div style={styles.titleContainer}>
+                            <h2 style={styles.genre}>{getData.profession}</h2>
+                        </div>
+                        )}
+                        <img src={getData.image_url} alt={getData.oshi_name} style={styles.image} />
+                        {getData.summary !== "Summary not found" &&(
+                        <div style={styles.descriptionContainer}>
+                            <p style={styles.description}>{getData.summary}</p>
+                        </div>
+                        )}
+                        <div style={styles.titleContainer}>
+                            <p style={styles.officialLinkLabel}>officialサイト</p>
+                        </div>
+                        <div style={styles.titleContainer}>
+                            <a href={getData.official_site_url} style={styles.officialLink}>{getData.official_site_url}</a>
+                        </div>
+                        <div style={styles.titleContainer}>
+                            <p style={styles.officialLinkLabel}>SNSリンク</p>
+                        </div>
+                        <div style={styles.titleContainer}>
+                            <div style={styles.snsContainer}>
+                                {Object.entries(getData.sns_links).map(([name, url]) => (
+                                    <a key={name} href={url as string} target="_blank" rel="noopener noreferrer" style={styles.snsButton}>
+                                        {name === "youtube" ? (
+                                            <Image src={"https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png"} alt={name} width={25} height={25} unoptimized />
+                                        ) : name === "spotify" ? (
+                                            <Image src={spotifyIcon} alt={name} width={25} height={25} unoptimized />
+                                        ) : name === "x" ? (
+                                            <Image src={xIcon} alt={name} width={25} height={25} unoptimized />
+                                        ) : name === "instagram" ? (
+                                            <Image src={"https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"} alt={name} width={25} height={25} unoptimized />
+                                        ) : null}
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ margin: '30px 0 10px 0' }}>
+                            <Btn type={"button"} text={"タグ選択画面へ"} onClick={handleDisplayChange} />
+                        </div>
+                        <Btn type={"button"} text={"検索画面に戻る"} onClick={() => window.location.href = "/selectFavorite"} />
+                    </>
+                ) : (
+                    <>
+                        <h2 style={{
+                            fontSize: "1.5rem",
+                        }}>登録したタグから一つ選択しよう！</h2>
+                        <FormControl
+                            component="fieldset"
+                            sx={{
+                                marginTop: "20px",
+                            }}
                         >
-                            {link.name === "YouTube" ? <Image
-                                src={"https://upload.wikimedia.org/wikipedia/commons/4/42/YouTube_icon_%282013-2017%29.png"}
-                                alt={link.name}
-                                width={25}
-                                height={25}
-                                unoptimized // This allows using external URLs without optimization
-                            /> :
-                                link.name === "Spotify" ? <Image
-                                    src={spotifyIcon}
-                                    alt={link.name}
-                                    width={25}
-                                    height={25}
-                                    unoptimized // This allows using external URLs without optimization
-                                /> :
-                                    link.name === "X" ? <Image
-                                        src={xIcon}
-                                        alt={link.name}
-                                        width={25}
-                                        height={25}
-                                        unoptimized // This allows using external URLs without optimization
-                                    /> :
-                                        link.name === "Instagram" ?  <Image
-                                        src={"https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png"}
-                                        alt={link.name}
-                                        width={25}
-                                        height={25}
-                                        unoptimized // This allows using external URLs without optimization
-                                    /> : null}
-                        </a>
-                    ))}
-                </div>
-            </div>
-            <div style={{
-                margin: '30px 0 10px 0',
-            }}>
-                <Btn type={"button"} text={"ノートを作成"} onClick={() => window.location.href = "../home"}/>
-            </div>
-            <Btn type={"button"} text={"検索画面に戻る"} onClick={() => window.location.href = "/selectFavorite"}/>
+
+                            <CheckboxContainer>
+                                {genles.map((tag) => (
+                                    <CustomFormControlLabel
+                                        key={tag}
+                                        control={
+                                            <CustomCheckbox
+                                                checked={!!checkedItems[tag]}
+                                                onChange={handleChange}
+                                                name={tag.toString()}
+                                            />
+                                        }
+                                        label={tag}
+                                        checked={!!checkedItems[tag]}
+                                    />
+                                ))}
+                            </CheckboxContainer>
+                            <div style={{
+                                margin: "0 auto",
+                                marginTop: "40px",
+                            }}>
+
+                                <Btn type={"button"} text={"ノートを作成"} onClick={handleSubmit} />
+                            </div>
+                        </FormControl>
+                    </>
+                )
+            )}
         </div>
     );
 };

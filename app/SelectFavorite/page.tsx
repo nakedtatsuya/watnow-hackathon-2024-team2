@@ -1,35 +1,93 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from 'react';
 import SearchBar from "../components/SearchBar";
 import Link from "next/link";
 
 const SelectFavorite = () => {
-  const [inputText, setInputText] = useState<string>("");
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [inputText, setInputText] = useState<string>('');
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const [genles, setGenles] = useState<string[]>([]);
+    const [debounceTimeout, setDebounceTimeout] = useState<NodeJS.Timeout | null>(null);
 
-  const sampleTags = ["音楽", "小説", "漫画", "ラジオ"];
-  const sampleSuggestions = [
-    "アーティストA",
-    "アーティストB",
-    "小説C",
-    "漫画D",
-  ];
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const value = event.target.value;
+        setInputText(value);
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    setInputText(value);
+        // Clear previous timeout if it exists
+        if (debounceTimeout) {
+            clearTimeout(debounceTimeout);
+        }
 
-    if (value) {
-      const filteredSuggestions = sampleSuggestions.filter((suggestion) =>
-        suggestion.includes(value)
-      );
-      setSuggestions(filteredSuggestions);
-    } else {
-      setSuggestions([]);
-    }
-  };
+        // Set a new timeout for the debounce
+        const newTimeout = setTimeout(async () => {
+            if (value) {
+                try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/search-oshi`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ query: value }),
+                    });
 
+                    if (response.ok) {
+                        const suggestionsData = await response.json();
+                        setSuggestions(suggestionsData.titles);
+                    } else {
+                        console.error('Failed to fetch suggestions');
+                        setSuggestions([]);
+                    }
+                } catch (error) {
+                    console.error('Error fetching suggestions:', error);
+                    setSuggestions([]);
+                }
+            } else {
+                setSuggestions([]);
+            }
+        }, 600); // 300ms debounce delay
+
+        setDebounceTimeout(newTimeout);
+    };
+
+    useEffect(() => {
+        const fetchGenres = async () => {
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                await getGenles({ email: userEmail });
+            }
+        };
+        fetchGenres();
+    }, []);
+
+    const getGenles = async (data:
+        {
+            email: string;
+        }
+    ) => {
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-user-genres`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: data.email,
+                }),
+            });
+
+            if (response.ok) {
+                const responseData = await response.json();
+                setGenles(responseData);
+            } else {
+                console.error('Failed to fetch genres');
+                setGenles([]);
+            }
+        } catch (error) {
+            console.error('Error fetching genres:', error);
+            setGenles([]);
+        }
+    };
   return (
     <div
       style={{
@@ -108,7 +166,7 @@ const SelectFavorite = () => {
           margin: "0",
         }}
       >
-        {sampleTags.map((tag) => (
+        {genles.map((tag) => (
           <span
             key={tag}
             style={{
@@ -123,7 +181,6 @@ const SelectFavorite = () => {
               width: "150px",
               height: "40px",
               borderRadius: "20px", // 角丸
-              zIndex: 1,
             }}
           >
             {tag}
@@ -140,7 +197,7 @@ const SelectFavorite = () => {
                 background:
                   "conic-gradient(#EAC46A, #D5FCD5, #6C97EC, #0731FB, #7634DB, #FF44AA,#FF6E49,#FF8E03,#EAC463)", // 虹色ボーダー風の背景
                 transition: "opacity 0.6s ease", // opacityに対して遷移を適用
-                "-webkit-mask":
+                WebkitMask:
                   "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)", // 背景色がボーダーになるようにする
                 mask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
                 maskComposite: "exclude",

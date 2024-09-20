@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import React from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Btn from "../components/Button"; // コンポーネントのパスを修正
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";
-import { display, fontWeight } from "@mui/system";
 import { CSSProperties } from 'react';
 
 const styles: { [key: string]: CSSProperties } = {
@@ -120,7 +119,7 @@ const NewRegistration = () => {
         password: data.password,
       }),
     });
-  
+
     if (response.ok) {
       const responseData = await response.json();
       setFormData({
@@ -139,7 +138,7 @@ const NewRegistration = () => {
       }
     }
   };
-  
+
 
   return (
     <div>

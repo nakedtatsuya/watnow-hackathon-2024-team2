@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import React from "react";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import Btn from "../components/Button"; // コンポーネントのパスを修正
-import { Padding } from "@mui/icons-material";
 import pen from "../images/reg1.png";
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";

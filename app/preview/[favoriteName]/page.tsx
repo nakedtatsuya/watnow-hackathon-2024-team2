@@ -9,7 +9,6 @@ import {
     Checkbox,
     FormControlLabel,
     FormControl,
-    FormLabel,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { CSSProperties } from 'react';

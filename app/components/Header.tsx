@@ -5,8 +5,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import IconButton from "@mui/material/IconButton";
-import Image from "next/image";
-import title from "../images/title.png"; // 画像のパスを確認してください
 
 export default function Header() {
   return (

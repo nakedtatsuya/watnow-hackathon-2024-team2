@@ -177,7 +177,6 @@ const SelectFavorite = () => {
               width: "150px",
               height: "40px",
               borderRadius: "20px", // 角丸
-              zIndex: 1,
             }}
           >
             {tag}

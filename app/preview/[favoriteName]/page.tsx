@@ -80,6 +80,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         official_site_url: "",
         sns_links: {}, // オブジェクト形式
     });
+    const [submitting, setSubmitting] = useState(false);
     const [isLoading, setIsLoading] = useState(true); // ローディングステート
     const [genles, setGenles] = useState<string[]>([]);
     const [submitted, setSubmitted] = useState(false);
@@ -145,6 +146,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             const responseData = await response.json();
             window.location.href = "/home";
         } else {
+            setSubmitting(false);
             console.error('Registration failed');
         }
     };
@@ -198,6 +200,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         const selectedItems = Object.keys(checkedItems).filter((key) => checkedItems[key]);
         if (userEmail) {
             const submitData = { email: userEmail, oshi_name: getData.oshi_name, genre:selectedItems[0] };
+            setSubmitting(true);
             await setFavorite(submitData);
         } else {
             console.log("email is not found");
@@ -289,7 +292,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
 
     return (
         <div style={styles.container}>
-            {isLoading ? (
+            {isLoading || submitting ? (
                 <div style={styles.loading}>Loading...</div>
             ) : (
                 !submitted ? (

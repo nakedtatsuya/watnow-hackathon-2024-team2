@@ -119,7 +119,7 @@ export default function SelectGenle() {
 
         if (response.ok) {
             const responseData = await response.json();
-            console.log(responseData);
+            window.location.href = '/selectFavorite';
         } else {
             console.error('Registration failed');
         }
@@ -134,7 +134,6 @@ export default function SelectGenle() {
             // submitDataが更新された後にregisterGenlesを呼び出す
             const currentSubmitData = { tags: selectedItems, email: emailData };
             await registerGenles(currentSubmitData);
-            window.location.href = '/selectFavorite';
         } else {
             console.log('email is not found');
         }

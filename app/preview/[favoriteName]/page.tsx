@@ -143,7 +143,6 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
 
         if (response.ok) {
             const responseData = await response.json();
-            console.log(responseData);
             window.location.href = "/home";
         } else {
             console.error('Registration failed');
@@ -169,6 +168,7 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
             if (response.ok) {
                 const responseData = await response.json();
                 setGenles(responseData);
+                setSubmitted(true);
             } else {
                 console.error('Failed to fetch genres');
                 setGenles([]);
@@ -183,7 +183,6 @@ const Preview = ({ params }: { params: { favoriteName: string } }) => {
         const userEmail = localStorage.getItem('userEmail');
         if (userEmail) {
             await getGenles({ email: userEmail });
-            setSubmitted(true);
         }
     };
 

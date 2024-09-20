@@ -7,8 +7,9 @@ import Btn from "../components/Button"; // コンポーネントのパスを修�
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";
 import { display, fontWeight } from "@mui/system";
+import { CSSProperties } from 'react';
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     fontFamily: "JPFont",
     width: "328px",
@@ -49,7 +50,7 @@ const styles = {
     display: "flex",
     paddingLeft: "10px",
     padding: "10px",
-    fontsize: "14px",
+    fontSize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
@@ -60,7 +61,7 @@ const styles = {
     display: "flex",
     padding: "10px",
     paddingLeft: "10px",
-    fontsize: "14px",
+    fontSize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
@@ -86,69 +87,84 @@ const NewRegistration = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<{ email: string; password: string }>();
   const [submitted, setSubmitted] = React.useState(false);
   const [formData, setFormData] = React.useState({
     email: "",
-    password: "",
+    name: "",
   });
+  const [errorMessage, setErrorMessage] = React.useState(""); // エラーメッセージの状態
 
-  const onSubmit = (data) => {
-    console.log(data); // ここでデータを確認
-    setFormData(data); // データを更新
-    setSubmitted(true); // フォーム送信時に状態を更新
+  const onSubmit = async (data:
+    {
+      email: string;
+      password: string;
+    }
+  ) => {
+    await loginUser(data);
   };
+
+  const loginUser = async (data:
+    {
+      email: string;
+      password: string;
+    }
+  ) => {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: data.email,
+        password: data.password,
+      }),
+    });
+  
+    if (response.ok) {
+      const responseData = await response.json();
+      setFormData({
+        email: responseData.email,
+        name: responseData.username,
+      });
+      localStorage.setItem('userEmail', responseData.email);
+      setSubmitted(true);
+    } else {
+      const errorData = await response.json();
+      if (response.status === 401) {
+        // 401エラーの場合の処理
+        setErrorMessage(errorData.message || 'ログインに失敗しました。メールアドレスまたはパスワードが正しいか確認してください。');
+      } else {
+        setErrorMessage(errorData.message || 'ログインに失敗しました');
+      }
+    }
+  };
+  
 
   return (
     <div>
       {submitted ? (
-        <div
-          style={{
-            width: "100%",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
+        <div style={{ width: "100%", display: "flex", flexDirection: "column" }}>
           <h1 style={styles.h1}>ログイン</h1>
-          <h2 style={styles.h2}>以下の内容で保存されました</h2>
+          <h2 style={styles.h2}>以下のアカウントに復帰しました</h2>
           <h2 style={styles.h2}>{formData.name}さん、おかえりなさい！</h2>
           <div style={styles.container}>
             <div style={{ padding: "19px", margin: "0px" }}>
               <p style={styles.p}>ID：{formData.email}</p>
-              <p style={styles.p}>パスワード：{formData.password}</p>
             </div>
           </div>
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <Btn
-              type="button"
-              text="はじめる"
-              onClick={() => (window.location.href = "./home")}
-            />
+            <Btn type="button" text="はじめる" onClick={() => (window.location.href = "./home")} />
           </div>
         </div>
       ) : (
         <>
           <h1 style={styles.h1}>ログイン</h1>
-          <form
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-            onSubmit={handleSubmit(onSubmit)}
-          >
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} {/* エラーメッセージの表示 */}
+          <form style={{ width: "100%", display: "flex", flexDirection: "column" }} onSubmit={handleSubmit(onSubmit)}>
             <div style={styles.container}>
               <div style={styles.user}>
-                <Image
-                  style={{
-                    backgroundColor: "#E6E6E6",
-                    padding: "13px",
-                    borderTopLeftRadius: "20px",
-                  }}
-                  src={mail}
-                  alt="mail"
-                  width={50}
-                />
+                <Image style={{ backgroundColor: "#E6E6E6", padding: "13px", borderTopLeftRadius: "20px" }} src={mail} alt="mail" width={50} />
                 <label style={styles.label}>ID</label>
               </div>
               <input
@@ -163,18 +179,9 @@ const NewRegistration = () => {
                 style={styles.input}
                 placeholder="メールアドレスを入力してください"
               />
-              {errors.email && (
-                <p style={{ color: "red", padding: "10px" }}>
-                  {errors.email.message}
-                </p>
-              )}
+              {errors.email && <p style={{ color: "red", padding: "10px" }}>{errors.email.message}</p>}
               <div style={styles.user}>
-                <Image
-                  style={{ backgroundColor: "#E6E6E6", padding: "13px" }}
-                  src={key}
-                  alt="key"
-                  width={50}
-                />
+                <Image style={{ backgroundColor: "#E6E6E6", padding: "13px" }} src={key} alt="key" width={50} />
                 <label style={styles.label2}>パスワード</label>
               </div>
               <input
@@ -189,33 +196,15 @@ const NewRegistration = () => {
                 style={styles.input2}
                 placeholder="パスワードを入力してください"
               />
-              {errors.password && (
-                <p style={{ color: "red", padding: "10px" }}>
-                  {errors.password.message}
-                </p>
-              )}
+              {errors.password && <p style={{ color: "red", padding: "10px" }}>{errors.password.message}</p>}
             </div>
             <div style={{ display: "flex", justifyContent: "center" }}>
               <Btn type="submit" text="送信する" />
             </div>
           </form>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              marginTop: "40px",
-              width: "100%",
-            }}
-          >
-            <p style={{ fontFamily: "JPFont " }}>
-              まだ登録していない方はこちら
-            </p>
-            <Btn
-              type="button"
-              text="新規登録画面へ"
-              onClick={() => (window.location.href = "./newRegistration")}
-            />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: "40px", width: "100%" }}>
+            <p style={{ fontFamily: "JPFont " }}>まだ登録していない方はこちら</p>
+            <Btn type="button" text="新規登録画面へ" onClick={() => (window.location.href = "./newRegistration")} />
           </div>
         </>
       )}

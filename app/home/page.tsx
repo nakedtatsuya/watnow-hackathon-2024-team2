@@ -20,7 +20,11 @@ const Home = () => {
     fetchGenres();
   }, []);
 
-  const getFavorites = async (data) => {
+  const getFavorites = async (data:
+    {
+      email: string;
+    }
+  ) => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/get-user-oshi-genres`, {
         method: 'POST',
@@ -34,7 +38,7 @@ const Home = () => {
         const responseData = await response.json();
         const oshiArray = responseData.oshi; // Access the oshi array
 
-        const grouped = oshiArray.reduce((acc, item) => {
+        const grouped = oshiArray.reduce((acc: { [key: string]: any[] }, item: { genre: string }) => {
           if (!acc[item.genre]) {
             acc[item.genre] = [];
           }

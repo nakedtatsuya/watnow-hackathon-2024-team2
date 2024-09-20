@@ -8,8 +8,9 @@ import { Padding } from "@mui/icons-material";
 import pen from "../images/reg1.png";
 import mail from "../images/reg2.png";
 import key from "../images/reg3.png";
+import { CSSProperties } from 'react';
 
-const styles = {
+const styles: { [key: string]: CSSProperties } = {
   container: {
     fontFamily: "JPFont",
     width: "328px",
@@ -49,7 +50,7 @@ const styles = {
     borderTopRightRadius: "20px",
     display: "flex",
     padding: "10px",
-    fontsize: "14px",
+    fontSize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
@@ -59,7 +60,7 @@ const styles = {
     width: "100%",
     display: "flex",
     padding: "13px",
-    fontsize: "14px",
+    fontSize: "14px",
     fontFamily: "JPFont",
     margin: "0 auto",
     fontWeight: "Bold",
@@ -87,7 +88,7 @@ const NewRegistration = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm<{ name: string; email: string; password: string }>();
   const [submitted, setSubmitted] = React.useState(false);
   const [formData, setFormData] = React.useState({
     name: "",
